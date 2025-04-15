@@ -40,6 +40,7 @@ public class GiteeObjectConverter {
         return Reference.builder()
                 .name(branch.getName())
                 .sha(branch.getCommit().getSha())
+                .linkUrl(branch.getProtectionUrl())
                 .build();
     }
 

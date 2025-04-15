@@ -1,18 +1,19 @@
 package com.tencent.devops.scm.provider.git.gitee;
 
+import com.tencent.devops.scm.api.enums.EventAction;
 import com.tencent.devops.scm.api.pojo.HookRequest;
-import com.tencent.devops.scm.api.pojo.webhook.Webhook;
 import com.tencent.devops.scm.api.pojo.webhook.git.PullRequestHook;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @Disabled
-public class GiteeWebhookParserTest extends AbstractGiteeServiceTest{
+public class GiteeWebhookParserTest extends AbstractGiteeServiceTest {
 
     private final GiteeWebhookParser webhookParser = new GiteeWebhookParser();
 
@@ -34,7 +35,7 @@ public class GiteeWebhookParserTest extends AbstractGiteeServiceTest{
                 .build();
 
         PullRequestHook webhook = (PullRequestHook) webhookParser.parse(request);
-        Webhook enrich = webhookEnricher.enrich(providerRepository, webhook);
-        System.out.println("enrich = " + enrich);
+        Assertions.assertEquals(1, webhook.getPullRequest().getNumber());
+        Assertions.assertEquals(EventAction.OPEN, webhook.getAction());
     }
 }

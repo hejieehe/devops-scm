@@ -1,17 +1,46 @@
 package com.tencent.devops.scm.provider.git.gitee;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.tencent.devops.scm.api.pojo.Reference;
+import com.tencent.devops.scm.sdk.gitee.GiteeApi;
+import com.tencent.devops.scm.sdk.gitee.GiteeApiFactory;
+import com.tencent.devops.scm.sdk.gitee.GiteeBranchesApi;
 import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class GiteeRefServiceTest extends AbstractGiteeServiceTest {
-    private static final String TEST_BRANCH_NAME = "master";
-    private static final String TEST_BRANCH_SEARCH_TERM = "mr_test";
-    private static final String TEST_TAG_NAME_0 = "v1.0.1";
-    private static final String TEST_COMMIT_SHA = "b5f141f9c1b3f87d9b070157097130be7fb7563a";
 
+    private static GiteeRefService refService;
 
-    private final GiteeRefService refService = new GiteeRefService(giteeApiFactory);
+    protected GiteeRefServiceTest() {
+        super();
+    }
+
+    @BeforeAll
+    public static void setup() {
+        mockData();
+    }
+
+    public static void mockData() {
+        giteeApiFactory = Mockito.mock(GiteeApiFactory.class);
+        refService = new GiteeRefService(giteeApiFactory);
+        providerRepository = createProviderRepository();
+        GiteeApi giteeApi = Mockito.mock(GiteeApi.class);
+        when(giteeApiFactory.fromAuthProvider(any()))
+                .thenReturn(giteeApi);
+        when(giteeApi.getBranchesApi()).thenReturn(Mockito.mock(GiteeBranchesApi.class));
+        when(giteeApi.getBranchesApi().getBranches(any()))
+                .thenReturn(
+                        read("get_branch.json", new TypeReference<>() {
+                        })
+                );
+        ;
+    }
 
     @Test
     public void testListBranches() {

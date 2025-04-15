@@ -6,7 +6,6 @@ import com.tencent.devops.scm.sdk.common.connector.ScmConnector;
 import com.tencent.devops.scm.sdk.common.connector.okhttp3.OkHttpScmConnector;
 import com.tencent.devops.scm.sdk.common.util.ScmJsonUtil;
 import com.tencent.devops.scm.sdk.gitee.GiteeApi;
-import com.tencent.devops.scm.sdk.gitee.GiteeConstants;
 import com.tencent.devops.scm.sdk.gitee.GiteeConstants.TokenType;
 import com.tencent.devops.scm.sdk.gitee.auth.GiteeTokenAuthProvider;
 import java.io.File;
@@ -25,9 +24,9 @@ public class AbstractGiteeTest {
     // 测试分支名
     protected static final String TEST_DEFAULT_BRANCH = "master";
     // [环境变量KEY]接口地址
-    protected static final String TEST_TGIT_API_URL = "TEST_GITEE_API_URL";
+    protected static final String TEST_GITEE_API_URL = "TEST_GITEE_API_URL";
     // [环境变量KEY]授权token
-    protected static final String TEST_TGIT_PRIVATE_TOKEN = "TEST_GITEE_PRIVATE_TOKEN";
+    protected static final String TEST_GITEE_PRIVATE_TOKEN = "TEST_GITEE_PRIVATE_TOKEN";
 
     // mock gitee api
     protected static GiteeApi mockGiteeApi() {
@@ -35,10 +34,10 @@ public class AbstractGiteeTest {
     }
 
     // 读取环境变量构建gitee api
-    protected static GiteeApi createTGitApi() {
+    protected static GiteeApi createGiteeApi() {
         ScmConnector connector = new OkHttpScmConnector(new OkHttpClient.Builder().build());
-        String apiUrl = getProperty(TEST_TGIT_API_URL);
-        String privateToken = getProperty(TEST_TGIT_PRIVATE_TOKEN);
+        String apiUrl = getProperty(TEST_GITEE_API_URL);
+        String privateToken = getProperty(TEST_GITEE_PRIVATE_TOKEN);
         HttpAuthProvider authorizationProvider =
                 GiteeTokenAuthProvider.fromTokenType(TokenType.PERSONAL_ACCESS, privateToken);
         return new GiteeApi(apiUrl, connector, authorizationProvider);

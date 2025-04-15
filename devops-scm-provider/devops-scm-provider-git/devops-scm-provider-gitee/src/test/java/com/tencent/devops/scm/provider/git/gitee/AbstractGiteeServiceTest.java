@@ -21,10 +21,9 @@ public class AbstractGiteeServiceTest {
     protected static final String TEST_TGIT_API_URL = "TEST_GITEE_API_URL";
     protected static final String TEST_TGIT_PRIVATE_TOKEN = "TEST_GITEE_PRIVATE_TOKEN";
 
-    protected GitScmProviderRepository providerRepository;
+    protected static GitScmProviderRepository providerRepository;
 
-    protected GiteeApiFactory giteeApiFactory;
-    protected GiteeApi giteeApi;
+    protected static GiteeApiFactory giteeApiFactory;
 
     protected AbstractGiteeServiceTest() {
         providerRepository = createProviderRepository();
@@ -32,7 +31,6 @@ public class AbstractGiteeServiceTest {
                 getProperty(TEST_TGIT_API_URL),
                 new OkHttpScmConnector(new OkHttpClient.Builder().build())
         );
-        giteeApi = giteeApiFactory.fromAuthProvider(GiteeTokenAuthProviderAdapter.get(providerRepository.getAuth()));
     }
 
     protected static GitScmProviderRepository createProviderRepository() {
