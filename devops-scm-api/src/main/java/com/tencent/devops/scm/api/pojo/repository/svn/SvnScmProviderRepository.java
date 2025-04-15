@@ -15,6 +15,7 @@ public class SvnScmProviderRepository implements ScmProviderRepository {
     private String url;
     private String userName;
     private IScmAuth auth;
+    private Object projectIdOrPath;
 
     public SvnScmProviderRepository withUrl(String url) {
         this.url = url;
@@ -28,6 +29,11 @@ public class SvnScmProviderRepository implements ScmProviderRepository {
 
     public SvnScmProviderRepository withAuth(IScmAuth auth) {
         this.auth = auth;
+        return this;
+    }
+
+    public SvnScmProviderRepository withProjectIdOrPath(String projectIdOrPath) {
+        this.projectIdOrPath = projectIdOrPath;
         return this;
     }
 }

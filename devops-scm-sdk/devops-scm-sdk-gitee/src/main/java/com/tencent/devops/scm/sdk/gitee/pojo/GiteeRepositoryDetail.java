@@ -4,7 +4,9 @@ package com.tencent.devops.scm.sdk.gitee.pojo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class GiteeRepositoryDetail extends GiteeBaseRepository {
 
