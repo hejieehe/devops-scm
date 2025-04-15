@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import okhttp3.OkHttpClient;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.mockito.Mockito;
 
 /**
@@ -36,8 +37,8 @@ public class AbstractGiteeTest {
     // 读取环境变量构建gitee api
     protected static GiteeApi createGiteeApi() {
         ScmConnector connector = new OkHttpScmConnector(new OkHttpClient.Builder().build());
-        String apiUrl = getProperty(TEST_GITEE_API_URL);
-        String privateToken = getProperty(TEST_GITEE_PRIVATE_TOKEN);
+        String apiUrl = StringUtils.defaultIfBlank(getProperty(TEST_GITEE_API_URL), "");
+        String privateToken = StringUtils.defaultIfBlank(getProperty(TEST_GITEE_PRIVATE_TOKEN), "");
         HttpAuthProvider authorizationProvider =
                 GiteeTokenAuthProvider.fromTokenType(TokenType.PERSONAL_ACCESS, privateToken);
         return new GiteeApi(apiUrl, connector, authorizationProvider);
