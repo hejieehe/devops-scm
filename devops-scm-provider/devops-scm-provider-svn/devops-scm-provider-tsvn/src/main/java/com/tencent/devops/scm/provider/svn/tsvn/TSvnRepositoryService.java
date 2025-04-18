@@ -124,6 +124,7 @@ public class TSvnRepositoryService implements RepositoryService {
     private TSvnWebHookConfig convertFromHookInput(HookInput input) {
         TSvnWebHookConfig.TSvnWebHookConfigBuilder builder = TSvnWebHookConfig.builder();
         builder.url(input.getUrl());
+        builder.path(input.getPath());
         HookEvents events = input.getEvents();
         if (events.getSvnPreLockEvents() != null && events.getSvnPreLockEvents()) {
             builder.svnPreLockEvents(true);

@@ -1,11 +1,15 @@
 package com.tencent.devops.scm.sdk.tsvn.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TSvnWebHookConfig {
     private String path;
     @JsonProperty("svn_pre_commit_events")
