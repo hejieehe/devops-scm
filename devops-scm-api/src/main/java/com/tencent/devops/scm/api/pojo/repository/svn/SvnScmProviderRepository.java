@@ -2,6 +2,7 @@ package com.tencent.devops.scm.api.pojo.repository.svn;
 
 import com.tencent.devops.scm.api.pojo.auth.IScmAuth;
 import com.tencent.devops.scm.api.pojo.repository.ScmProviderRepository;
+import com.tencent.devops.scm.api.util.SvnUtils;
 import lombok.Getter;
 
 /**
@@ -19,6 +20,7 @@ public class SvnScmProviderRepository implements ScmProviderRepository {
 
     public SvnScmProviderRepository withUrl(String url) {
         this.url = url;
+        this.projectIdOrPath = SvnUtils.getSvnProjectName(url);
         return this;
     }
 
@@ -29,11 +31,6 @@ public class SvnScmProviderRepository implements ScmProviderRepository {
 
     public SvnScmProviderRepository withAuth(IScmAuth auth) {
         this.auth = auth;
-        return this;
-    }
-
-    public SvnScmProviderRepository withProjectIdOrPath(String projectIdOrPath) {
-        this.projectIdOrPath = projectIdOrPath;
         return this;
     }
 }
