@@ -5,7 +5,9 @@ import com.tencent.devops.scm.api.pojo.Change.ChangeBuilder;
 import com.tencent.devops.scm.api.pojo.Hook;
 import com.tencent.devops.scm.api.pojo.HookEvents;
 import com.tencent.devops.scm.api.pojo.HookEvents.HookEventsBuilder;
+import com.tencent.devops.scm.api.pojo.repository.svn.SvnScmServerRepository;
 import com.tencent.devops.scm.sdk.tsvn.pojo.TSvnEventFile;
+import com.tencent.devops.scm.sdk.tsvn.pojo.TSvnEventRepository;
 import com.tencent.devops.scm.sdk.tsvn.pojo.TSvnWebHookConfig;
 import org.apache.commons.lang3.StringUtils;
 
@@ -56,6 +58,25 @@ public class TSvnObjectConverter {
                 .sha("")
                 .blobId("")
                 .oldPath("")
+                .build();
+    }
+
+    /*========================================repository====================================================*/
+    public static SvnScmServerRepository convertRepository(
+            TSvnEventRepository eventRepository,
+            Long projectId,
+            String fullName
+    ) {
+        String group = StringUtils.substringBefore(fullName, eventRepository.getName())
+                .replaceAll("/", "");
+        return SvnScmServerRepository.builder()
+                .id(projectId.toString())
+                .name(eventRepository.getName())
+                .group(group)
+                .fullName(fullName)
+                .httpUrl(eventRepository.getSvnHttpUrl())
+                .sshUrl(eventRepository.getSvnSshUrl())
+                .webUrl(eventRepository.getHomepage())
                 .build();
     }
 }

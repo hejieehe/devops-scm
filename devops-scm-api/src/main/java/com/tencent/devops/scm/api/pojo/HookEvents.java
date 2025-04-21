@@ -83,6 +83,9 @@ public class HookEvents {
         if (pullRequestReview != null && pullRequestReview) {
             events.add(ScmEventType.PULL_REQUEST_REVIEW.value);
         }
+        if (svnPostCommitEvents != null && svnPostCommitEvents) {
+            events.add(ScmEventType.POST_COMMIT.value);
+        }
         return events;
     }
 }

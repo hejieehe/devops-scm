@@ -5,12 +5,14 @@ import static com.tencent.devops.scm.api.constant.WebhookOutputCode.BK_REPO_SVN_
 import static com.tencent.devops.scm.api.constant.WebhookOutputCode.BK_REPO_SVN_WEBHOOK_USERNAME;
 import static com.tencent.devops.scm.api.constant.WebhookOutputCode.PIPELINE_WEBHOOK_COMMIT_MESSAGE;
 
+import com.tencent.devops.scm.api.constant.WebhookI18Code;
 import com.tencent.devops.scm.api.pojo.Change;
 import com.tencent.devops.scm.api.pojo.ScmI18Variable;
 import com.tencent.devops.scm.api.pojo.User;
 import com.tencent.devops.scm.api.pojo.repository.ScmServerRepository;
 import com.tencent.devops.scm.api.pojo.repository.svn.SvnScmServerRepository;
 import com.tencent.devops.scm.api.pojo.webhook.Webhook;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,8 @@ import lombok.NonNull;
 @NoArgsConstructor
 @Builder
 public class PostCommitHook implements Webhook {
+
+    public static final String CLASS_TYPE = "post_commit";
     private SvnScmServerRepository repository;
     // 变更的文件路径
     private List<Change> changes;
@@ -50,7 +54,10 @@ public class PostCommitHook implements Webhook {
 
     @Override
     public ScmI18Variable getEventDesc() {
-        return null;
+        return ScmI18Variable.builder()
+                .code(WebhookI18Code.SVN_POST_COMMIT)
+                .params(Arrays.asList(revision.toString(), sender.getName()))
+                .build();
     }
 
     @Override

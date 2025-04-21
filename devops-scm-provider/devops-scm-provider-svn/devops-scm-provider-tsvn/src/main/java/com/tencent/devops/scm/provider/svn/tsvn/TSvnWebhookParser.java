@@ -4,6 +4,7 @@ import com.tencent.devops.scm.api.WebhookParser;
 import com.tencent.devops.scm.api.pojo.Change;
 import com.tencent.devops.scm.api.pojo.HookRequest;
 import com.tencent.devops.scm.api.pojo.User;
+import com.tencent.devops.scm.api.pojo.repository.svn.SvnScmServerRepository;
 import com.tencent.devops.scm.api.pojo.webhook.Webhook;
 import com.tencent.devops.scm.api.pojo.webhook.svn.PostCommitHook;
 import com.tencent.devops.scm.provider.svn.tsvn.enums.TSvnEventType;
@@ -53,6 +54,13 @@ public class TSvnWebhookParser implements WebhookParser {
                 .email(src.getUserEmail())
                 .build();
         return PostCommitHook.builder()
+                .repository(
+                        TSvnObjectConverter.convertRepository(
+                                src.getRepository(),
+                                src.getProjectId(),
+                                src.getRepName()
+                        )
+                )
                 .revision(src.getRevision())
                 .message(src.getMessage())
                 .changes(changes)

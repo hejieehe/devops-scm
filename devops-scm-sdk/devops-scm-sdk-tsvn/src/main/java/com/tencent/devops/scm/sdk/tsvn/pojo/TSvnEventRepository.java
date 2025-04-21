@@ -18,7 +18,7 @@ public class TSvnEventRepository {
     private Integer visibilityLevel;
 
     public String getRealHttpUrl() {
-        return StringUtils.isNotBlank(svnHttpUrl) ? svnSshUrl :
+        return StringUtils.isNotBlank(svnHttpUrl) ? svnHttpUrl :
                 StringUtils.isNotBlank(homepage) ? homepage : url;
     }
 }
