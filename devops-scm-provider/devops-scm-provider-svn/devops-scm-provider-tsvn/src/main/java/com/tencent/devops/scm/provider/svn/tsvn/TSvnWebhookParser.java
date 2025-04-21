@@ -66,7 +66,7 @@ public class TSvnWebhookParser implements WebhookParser {
                 .changes(changes)
                 .commitTime(src.getCommitTime())
                 .sender(sender)
-                .eventType(TSvnEventType.POST_COMMIT.toValue())
+                .eventType(TSvnEventType.POST_COMMIT.name())
                 .build();
     }
 }
