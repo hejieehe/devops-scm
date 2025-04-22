@@ -4,6 +4,7 @@ import static com.tencent.devops.scm.api.constant.WebhookOutputCode.BK_REPO_SVN_
 import static com.tencent.devops.scm.api.constant.WebhookOutputCode.BK_REPO_SVN_WEBHOOK_REVERSION;
 import static com.tencent.devops.scm.api.constant.WebhookOutputCode.BK_REPO_SVN_WEBHOOK_USERNAME;
 import static com.tencent.devops.scm.api.constant.WebhookOutputCode.PIPELINE_WEBHOOK_COMMIT_MESSAGE;
+import static com.tencent.devops.scm.api.constant.WebhookOutputCode.PIPELINE_WEBHOOK_EVENT_TYPE;
 import static com.tencent.devops.scm.api.constant.WebhookOutputCode.PIPELINE_WEBHOOK_REVISION;
 
 import com.tencent.devops.scm.api.constant.WebhookI18Code;
@@ -70,6 +71,7 @@ public class PostCommitHook implements Webhook {
         outputParams.put(BK_REPO_SVN_WEBHOOK_COMMIT_TIME, commitTime);
         outputParams.put(PIPELINE_WEBHOOK_COMMIT_MESSAGE, message);
         outputParams.put(PIPELINE_WEBHOOK_REVISION, revision);
+        outputParams.put(PIPELINE_WEBHOOK_EVENT_TYPE, eventType);
         if (extras != null) {
             outputParams.putAll(extras);
         }
