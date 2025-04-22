@@ -1,5 +1,8 @@
 package com.tencent.devops.scm.provider.svn.tsvn;
 
+import static com.tencent.devops.scm.sdk.tsvn.TSvnConstants.HOOK_SOURCE_TYPE;
+import static com.tencent.devops.scm.sdk.tsvn.TSvnConstants.TEST_HOOK_SOURCE_TYPE_VALUE;
+
 import com.tencent.devops.scm.api.WebhookParser;
 import com.tencent.devops.scm.api.pojo.Change;
 import com.tencent.devops.scm.api.pojo.HookRequest;
@@ -22,9 +25,10 @@ public class TSvnWebhookParser implements WebhookParser {
     @Override
     public Webhook parse(HookRequest request) {
         Webhook hook = null;
+        boolean skipCi = skipCi(request);
         switch (request.getHeaders().get("X-Event")) {
             case "Svn Post Commit":
-                hook = parsePostCommitHook(request.getBody());
+                hook = parsePostCommitHook(request.getBody(), skipCi);
                 break;
             default:
 
@@ -42,7 +46,7 @@ public class TSvnWebhookParser implements WebhookParser {
         return secretToken.equals(token);
     }
 
-    private Webhook parsePostCommitHook(String body) {
+    private Webhook parsePostCommitHook(String body, boolean skipCi) {
         TSvnPostCommitEvent src = ScmJsonUtil.fromJson(body, TSvnPostCommitEvent.class);
         List<Change> changes = CollectionUtils.emptyIfNull(src.getFiles())
                 .stream()
@@ -67,6 +71,14 @@ public class TSvnWebhookParser implements WebhookParser {
                 .commitTime(src.getCommitTime())
                 .sender(sender)
                 .eventType(TSvnEventType.POST_COMMIT.name())
+                .skipCi(skipCi)
                 .build();
+    }
+
+    /**
+     * 测试hook无需触发CI
+     */
+    private boolean skipCi(HookRequest request) {
+        return TEST_HOOK_SOURCE_TYPE_VALUE.equals(request.getHeaders().get(HOOK_SOURCE_TYPE));
     }
 }

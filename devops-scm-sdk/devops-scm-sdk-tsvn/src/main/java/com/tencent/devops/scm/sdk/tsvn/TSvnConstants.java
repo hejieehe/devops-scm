@@ -57,6 +57,9 @@ public interface TSvnConstants {
     public static final int VISIBILITY_PRIVATE = 0;
     // 内部项目
     public static final int VISIBILITY_INTERNAL = 10;
+    public static final String HOOK_SOURCE_TYPE = "X-Source-Type";
+    // 测试HOOK，无需触发ci
+    public static final String TEST_HOOK_SOURCE_TYPE_VALUE = "Test";
 
 
     public enum TokenType {

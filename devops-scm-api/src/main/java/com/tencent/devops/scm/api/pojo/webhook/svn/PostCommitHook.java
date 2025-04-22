@@ -42,6 +42,7 @@ public class PostCommitHook implements Webhook {
     private Map<String, Object> extras;
     private Long revision;
     private Long commitTime;
+    private boolean skipCi;
 
     @Override
     public ScmServerRepository repository() {
@@ -73,5 +74,10 @@ public class PostCommitHook implements Webhook {
             outputParams.putAll(extras);
         }
         return outputParams;
+    }
+
+    @Override
+    public Boolean skipCi() {
+        return skipCi;
     }
 }
