@@ -20,6 +20,7 @@ public class TSvnObjectConverter {
                 .url(webhookConfig.getUrl())
                 .events(convertEvents(webhookConfig))
                 .active(true)
+                .path(webhookConfig.getPath())
                 .build();
     }
 
