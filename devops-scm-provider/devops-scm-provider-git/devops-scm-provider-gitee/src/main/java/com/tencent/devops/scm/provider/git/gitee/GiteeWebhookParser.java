@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.swing.text.html.Option;
 import kotlin.Pair;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -59,7 +58,7 @@ public class GiteeWebhookParser implements WebhookParser {
         );
         EventAction action = EventAction.PUSH_FILE;
         if (giteePushHook.getCreated()) {
-            action = EventAction.CREATE;
+            action = EventAction.NEW_BRANCH;
         } else if (giteePushHook.getDeleted()) {
             action = EventAction.DELETE;
         }
@@ -79,7 +78,8 @@ public class GiteeWebhookParser implements WebhookParser {
                         .map(GiteeObjectConverter::convertCommit)
                         .collect(Collectors.toList())
                 )
-                .totalCommitsCount(Optional.ofNullable(giteePushHook.getTotalCommitsCount())
+                .totalCommitsCount(
+                        Optional.ofNullable(giteePushHook.getTotalCommitsCount())
                         .map(Long::intValue)
                         .orElse(0)
                 )

@@ -1,5 +1,7 @@
 package com.tencent.devops.scm.provider.git.gitee;
 
+import static com.tencent.devops.scm.api.enums.EventAction.PUSH_FILE;
+
 import com.tencent.devops.scm.api.WebhookEnricher;
 import com.tencent.devops.scm.api.exception.UnAuthorizedScmApiException;
 import com.tencent.devops.scm.api.function.TriConsumer;
@@ -20,6 +22,7 @@ import com.tencent.devops.scm.sdk.gitee.pojo.GiteeCommitCompare;
 import com.tencent.devops.scm.sdk.gitee.pojo.GiteeCommitDetail;
 import com.tencent.devops.scm.sdk.gitee.pojo.GiteePullRequest;
 import com.tencent.devops.scm.sdk.gitee.pojo.GiteePullRequestDiff;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -42,13 +45,17 @@ public class GiteeWebhookEnricher implements WebhookEnricher {
 
     private void enrichPushHook(GiteeApi giteeApi, GitScmProviderRepository repository, Webhook hook) {
         GitPushHook gitPushHook = (GitPushHook) hook;
-        GiteeCommitCompare commitCompare = giteeApi.getFileApi().commitCompare(
-                repository.getProjectIdOrPath(),
-                gitPushHook.getBefore(),
-                gitPushHook.getAfter(),
-                false
-        );
-        gitPushHook.setChanges(GiteeObjectConverter.convertCompare(commitCompare));
+        List<Change> changes = new ArrayList<>();
+        if (PUSH_FILE.equals(gitPushHook.getAction())) {
+            GiteeCommitCompare commitCompare = giteeApi.getFileApi().commitCompare(
+                    repository.getProjectIdOrPath(),
+                    gitPushHook.getBefore(),
+                    gitPushHook.getAfter(),
+                    false
+            );
+            changes = GiteeObjectConverter.convertCompare(commitCompare);
+        }
+        gitPushHook.setChanges(changes);
     }
 
     private void enrichPullRequestHook(GiteeApi giteeApi, GitScmProviderRepository repository, Webhook hook) {
