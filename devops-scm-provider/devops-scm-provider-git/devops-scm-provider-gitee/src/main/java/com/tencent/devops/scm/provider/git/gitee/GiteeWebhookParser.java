@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import kotlin.Pair;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class GiteeWebhookParser implements WebhookParser {
 
@@ -70,7 +71,8 @@ public class GiteeWebhookParser implements WebhookParser {
                 .after(giteePushHook.getAfter())
                 .commit(GiteeObjectConverter.convertCommit(headCommit))
                 .sender(GiteeObjectConverter.convertUser(giteePushHook.getSender()))
-                .commits(giteePushHook.getCommits()
+                .commits(
+                        CollectionUtils.emptyIfNull(giteePushHook.getCommits())
                         .stream()
                         .map(GiteeObjectConverter::convertCommit)
                         .collect(Collectors.toList())
