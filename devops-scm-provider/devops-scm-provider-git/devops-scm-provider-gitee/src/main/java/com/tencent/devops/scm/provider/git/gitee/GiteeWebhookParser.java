@@ -63,14 +63,33 @@ public class GiteeWebhookParser implements WebhookParser {
             action = EventAction.DELETE;
         }
         GiteeEventCommit headCommit = giteePushHook.getHeadCommit();
+        Commit commit = GiteeObjectConverter.convertCommit(headCommit);
+        String ref = GitUtils.trimRef(giteePushHook.getRef());
+        String link;
+        // 根据事件动作封装事件详情链接
+        switch (action) {
+            case NEW_BRANCH:
+                link = (new StringBuilder())
+                        .append(repository.getWebUrl())
+                        .append("/tree/")
+                        .append(ref)
+                        .toString();
+                break;
+            case DELETE:
+                link = repository.getWebUrl();
+                break;
+            default:
+                link = commit.getLink();
+        }
         return GitPushHook.builder()
                 .action(action)
-                .ref(GitUtils.trimRef(giteePushHook.getRef()))
+                .ref(ref)
                 .repo(repository)
                 .eventType(GiteeEventType.PUSH.name())
                 .before(giteePushHook.getBefore())
                 .after(giteePushHook.getAfter())
-                .commit(GiteeObjectConverter.convertCommit(headCommit))
+                .commit(commit)
+                .link(link)
                 .sender(GiteeObjectConverter.convertUser(giteePushHook.getSender()))
                 .commits(
                         CollectionUtils.emptyIfNull(giteePushHook.getCommits())
