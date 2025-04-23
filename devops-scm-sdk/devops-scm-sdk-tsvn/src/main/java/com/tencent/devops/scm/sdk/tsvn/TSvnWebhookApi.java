@@ -9,8 +9,8 @@ import java.util.List;
 public class TSvnWebhookApi extends AbstractTSvnApi {
 
     // 请求uri
-    private static final String PROJECT_HOOK_URI_PATTERN = "projects/:id/hooks";
-    private static final String PROJECT_HOOK_ID_URI_PATTERN = "projects/:id/hooks/:hook_id";
+    private static final String PROJECT_HOOK_URI_PATTERN = "svn/projects/:id/hooks";
+    private static final String PROJECT_HOOK_ID_URI_PATTERN = "svn/projects/:id/hooks/:hook_id";
 
     public TSvnWebhookApi(TSvnApi tSvnApi) {
         super(tSvnApi);
