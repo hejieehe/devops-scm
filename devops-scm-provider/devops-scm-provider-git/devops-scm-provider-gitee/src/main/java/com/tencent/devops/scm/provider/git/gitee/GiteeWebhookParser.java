@@ -22,7 +22,9 @@ import com.tencent.devops.scm.sdk.gitee.pojo.webhook.GiteePullRequestHook;
 import com.tencent.devops.scm.sdk.gitee.pojo.webhook.GiteePushHook;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.swing.text.html.Option;
 import kotlin.Pair;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -77,7 +79,10 @@ public class GiteeWebhookParser implements WebhookParser {
                         .map(GiteeObjectConverter::convertCommit)
                         .collect(Collectors.toList())
                 )
-                .totalCommitsCount(giteePushHook.getTotalCommitsCount().intValue())
+                .totalCommitsCount(Optional.ofNullable(giteePushHook.getTotalCommitsCount())
+                        .map(Long::intValue)
+                        .orElse(0)
+                )
                 .extras(new HashMap<>())
                 .build();
     }
