@@ -7,6 +7,8 @@ import com.tencent.devops.scm.api.enums.EventAction;
 import com.tencent.devops.scm.api.pojo.Commit;
 import com.tencent.devops.scm.api.pojo.HookRequest;
 import com.tencent.devops.scm.api.pojo.PullRequest;
+import com.tencent.devops.scm.api.pojo.Signature;
+import com.tencent.devops.scm.api.pojo.User;
 import com.tencent.devops.scm.api.pojo.repository.git.GitScmServerRepository;
 import com.tencent.devops.scm.api.pojo.webhook.Webhook;
 import com.tencent.devops.scm.api.pojo.webhook.git.GitPushHook;
@@ -58,13 +60,22 @@ public class GiteeWebhookParser implements WebhookParser {
                 giteePushHook.getRepository()
         );
         EventAction action = EventAction.PUSH_FILE;
+        // 删除分支时没有headCommit
+        GiteeEventCommit headCommit = giteePushHook.getHeadCommit();
+        Commit commit = Optional.ofNullable(headCommit)
+                .map(GiteeObjectConverter::convertCommit)
+                .orElse(null);
         if (giteePushHook.getCreated()) {
             action = EventAction.NEW_BRANCH;
         } else if (giteePushHook.getDeleted()) {
             action = EventAction.DELETE;
+            if (commit == null) {
+                commit = Commit.builder()
+                        .sha(giteePushHook.getBefore())
+                        .message("")
+                        .build();
+            }
         }
-        GiteeEventCommit headCommit = giteePushHook.getHeadCommit();
-        Commit commit = GiteeObjectConverter.convertCommit(headCommit);
         String ref = GitUtils.trimRef(giteePushHook.getRef());
         String link;
         // 根据事件动作封装事件详情链接
@@ -95,7 +106,6 @@ public class GiteeWebhookParser implements WebhookParser {
                 .commits(
                         CollectionUtils.emptyIfNull(giteePushHook.getCommits())
                         .stream()
-                        .filter(Objects::nonNull)
                         .map(GiteeObjectConverter::convertCommit)
                         .collect(Collectors.toList())
                 )
