@@ -647,9 +647,9 @@ public class GiteeRefService implements RefService {
 ````
 
 ### 3.6 优化代码
-结合上述代码可以发现每次创建giteeApi对象都很麻烦，apiUrl以及connector对象的创建较为繁琐，为此方便后续维护，可对此部分
-代码进行优化，采用工厂模式统一创建giteeApi对象，同时也可以用于对接多种connector，将 API 客户端的创建与使用分离，服务类
-不需要关心 API 客户端的构建细节
+分析上述代码可以发现每次创建giteeApi对象都很麻烦，apiUrl以及connector对象的创建较为繁琐，为了方便后续维护，可对此部分
+代码进行优化，采用工厂模式统一创建giteeApi对象，同时也可以对接多种connector，将 API 客户端的创建与使用分离，服务类
+不需要关心API客户端的构建细节
 
 参考：
 
@@ -698,7 +698,7 @@ webhook实体类下级实体类命名规则：GiteeEvent{要素名}
 
 - GiteeEventCommit -- webhook事件提交实体类
 
-#### 3.6.1 解析webhook
+#### 3.6.2 解析webhook
 在 [devops-scm-provider-gitee] 模块下增加webhook解析器和增强器，分别实现两个接口
 - [WebhookParser](../devops-scm-api/src/main/java/com/tencent/devops/scm/api/WebhookParser.java) : webhook解析器，主要用于校验webhook有效性，同时根据不同的webhook 事件组装对应的[Webhook](../devops-scm-api/src/main/java/com/tencent/devops/scm/api/pojo/webhook/Webhook.java)实体类
 - [WebhookEnricher](../devops-scm-api/src/main/java/com/tencent/devops/scm/api/WebhookEnricher.java)：webhook增强器，由于webhook元数据中的信息可能不足以补全[Webhook](../devops-scm-api/src/main/java/com/tencent/devops/scm/api/pojo/webhook/Webhook.java)实体类内的字段，需要额外调用服务端API才能补充，补充操作可在enrich方法内实现
@@ -708,11 +708,27 @@ webhook实体类下级实体类命名规则：GiteeEvent{要素名}
 - [TGitWebhookParser](../devops-scm-provider/devops-scm-provider-git/devops-scm-provider-tgit/src/main/java/com/tencent/devops/scm/provider/git/tgit/TGitWebhookParser.java)
 
 #### 3.6.2 服务挂载
-为了后续集成 spring-boot，需对gitee功能服务类以及webhook解析进行挂载，需继承抽象类 [GitScmProvider](../devops-scm-provider/devops-scm-provider-git/devops-scm-provider-git-common/src/main/java/com/tencent/devops/scm/provider/git/command/GitScmProvider.java)，并对应的抽象方法 
+以上功能完成后，为了便于后续集成 spring-boot 以及同时也对service类进行统一管控，可以对相关service类以及webhook解析类
+进行集成，需继承抽象类 [GitScmProvider](../devops-scm-provider/devops-scm-provider-git/devops-scm-provider-git-common/src/main/java/com/tencent/devops/scm/provider/git/command/GitScmProvider.java)，对其抽象方法进行完善 
 
 参考：
+
 [TGitScmProvider](../devops-scm-provider/devops-scm-provider-git/devops-scm-provider-tgit/src/main/java/com/tencent/devops/scm/provider/git/tgit/TGitScmProvider.java)
 
-## 4. spring-boot自动装配
+[GiteeScmProvider](../devops-scm-provider/devops-scm-provider-git/devops-scm-provider-gitee/src/main/java/com/tencent/devops/scm/provider/git/gitee/GiteeScmProvider.java)
 
-## 5. 服务打包
+## 4. spring-boot自动装配
+本项目支持集成到第三方spring-boot项目中，核心代码位于[devops-scm-spring-boot-starter](../devops-scm-spring-boot-starter)模块，主要包含两块内容
+- manager
+  <br>
+  对已支持代码源服务进行统一管理，实现[ScmProviderFactory](../devops-scm-spring-boot-starter/src/main/java/com/tencent/devops/scm/spring/manager/ScmProviderFactory.java)接口，采用工厂模式创建具体的Provider，连接器相关配置
+可通过上层springboot进行注入，源码实现可参考：
+  <br>
+  [GiteeScmProviderFactory](../devops-scm-spring-boot-starter/src/main/java/com/tencent/devops/scm/spring/manager/GiteeScmProviderFactory.java)
+  <br>
+  [TGitScmProviderFactory](../devops-scm-spring-boot-starter/src/main/java/com/tencent/devops/scm/spring/manager/TGitScmProviderFactory.java)
+- config
+  <br>
+  为了上层SpringBoot项目能对相关Provider进行自动装配，需创建springboot-configuration，对相关Provider进行挂载，
+相关源码可参考[ScmProviderConfiguration](../devops-scm-spring-boot-starter/src/main/java/com/tencent/devops/scm/spring/config/ScmProviderConfiguration.java)，服务挂载完毕后，还需对将相关Configuration类的全类名记录到[META-INF](../devops-scm-spring-boot-starter/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports)，以便
+上层SpringBoot项目能识别需要加载的Configuration类，从而自动创建Provider相关的bean对象

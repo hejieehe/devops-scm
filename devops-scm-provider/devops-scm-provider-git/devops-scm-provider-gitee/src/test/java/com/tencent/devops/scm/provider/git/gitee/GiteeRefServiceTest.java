@@ -8,6 +8,7 @@ import com.tencent.devops.scm.api.pojo.Reference;
 import com.tencent.devops.scm.sdk.gitee.GiteeApi;
 import com.tencent.devops.scm.sdk.gitee.GiteeApiFactory;
 import com.tencent.devops.scm.sdk.gitee.GiteeBranchesApi;
+import com.tencent.devops.scm.sdk.gitee.pojo.GiteeBranch;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -36,10 +37,9 @@ public class GiteeRefServiceTest extends AbstractGiteeServiceTest {
         when(giteeApi.getBranchesApi()).thenReturn(Mockito.mock(GiteeBranchesApi.class));
         when(giteeApi.getBranchesApi().getBranches(any()))
                 .thenReturn(
-                        read("get_branch.json", new TypeReference<>() {
+                        read("get_branch.json", new TypeReference<List<GiteeBranch>>() {
                         })
                 );
-        ;
     }
 
     @Test

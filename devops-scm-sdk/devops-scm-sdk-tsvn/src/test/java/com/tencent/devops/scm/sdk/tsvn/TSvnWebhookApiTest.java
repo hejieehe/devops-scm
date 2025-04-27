@@ -4,6 +4,7 @@ package com.tencent.devops.scm.sdk.tsvn;
 import static org.mockito.ArgumentMatchers.any;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.tencent.devops.scm.sdk.tsvn.pojo.TSvnSession;
 import com.tencent.devops.scm.sdk.tsvn.pojo.TSvnWebHookConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,7 +22,7 @@ public class TSvnWebhookApiTest extends AbstractTSvnTest {
     @BeforeAll
     public static void setup() {
         tSvnApi = createTSvnApi();
-        mockData();
+//        mockData();
     }
 
     public static void mockData() {
@@ -29,7 +30,7 @@ public class TSvnWebhookApiTest extends AbstractTSvnTest {
         Mockito.when(tSvnApi.getWebhookApi()).thenReturn(Mockito.mock(TSvnWebhookApi.class));
         Mockito.when(tSvnApi.getWebhookApi().addHook(any(), any()))
                 .thenReturn(
-                        read("add_hook.json", new TypeReference<>() {})
+                        read("add_hook.json", new TypeReference<TSvnWebHookConfig>() {})
                 );
     }
 
@@ -45,5 +46,13 @@ public class TSvnWebhookApiTest extends AbstractTSvnTest {
                         .build()
         );
         Assertions.assertEquals(hookUrl, tSvnWebHookConfig.getUrl());
+    }
+
+    @Test
+    public void session() {
+        TSvnSessionApi sessionApi = new TSvnSessionApi(tSvnApi);
+        TSvnSession session = sessionApi.getSession("v_hejieehe", "Hejie1998%");
+
+        System.out.println("session = " + session);
     }
 }
