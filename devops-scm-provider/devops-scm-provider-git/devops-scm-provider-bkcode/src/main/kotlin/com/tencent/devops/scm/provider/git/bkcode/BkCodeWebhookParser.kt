@@ -168,15 +168,13 @@ class BkCodeWebhookParser : WebhookParser {
         )
         val user = BkCodeObjectConverter.convertUser(src.sender)
         val pullRequest = BkCodeObjectConverter.convertPullRequest(user, src.mergeRequest)
-        // TODO: 完善commit
-        // val commit = BkCodeObjectConverter.convertCommit(src.commits.first())
         return PullRequestHook(
             action = action,
             repo = repo,
             eventType = MERGE_REQUEST.name,
             pullRequest = pullRequest,
             sender = getSender(src),
-            commit = Commit(sha = "", message = ""),
+            commit = Commit(sha = src.mergeRequest.headCommitId, message = ""),
             extras = extras,
             changes = listOf()
         )

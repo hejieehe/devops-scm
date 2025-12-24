@@ -4,5 +4,6 @@ data class CheckRunListOptions(
     val page: Int? = null,
     val pageSize: Int? = null,
     val ref: String,
-    val pullRequestId: Long? = null
+    val pullRequestId: Long? = null,
+    val targetBranch: String? = null
 )

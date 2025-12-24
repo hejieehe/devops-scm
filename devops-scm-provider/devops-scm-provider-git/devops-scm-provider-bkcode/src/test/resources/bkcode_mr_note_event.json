@@ -112,7 +112,9 @@
     "closedAt": "null",
     "createdAt": "2025-11-07T19:53:38",
     "updatedAt": "2025-11-07T19:53:38",
-    "url": "https://bkcode.template.com/hejieehe/devops_trigger/-/mergeRequest/detail/2"
+    "url": "https://bkcode.template.com/hejieehe/devops_trigger/-/mergeRequest/detail/2",
+    "baseCommitId": "7eaa451cdfd155338f113f1bb2d57527f34fc657",
+    "headCommitId": "0cfeacad6fd5ceb7dc5dece5252b1bbdc3da3cc8"
   },
   "event": "COMMENT_EVENT",
   "action": "created",

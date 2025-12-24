@@ -32,4 +32,12 @@ public class ScmJsonUtil {
             throw new ScmSdkException(exception);
         }
     }
+
+    public static String toJson(Object object) {
+        try {
+            return JSON_FACTORY.toJson(object);
+        } catch (Exception exception) {
+            throw new ScmSdkException(exception);
+        }
+    }
 }

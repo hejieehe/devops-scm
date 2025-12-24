@@ -1,0 +1,70 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "repoId": 1121,
+      "commitSha": "0cfeacad6fd5ceb7dc5dece5252b1bbdc3da3cc8",
+      "state": "SUCCESS",
+      "context": "devops repo check",
+      "targetUrl": "github.com",
+      "description": "devops repo check desc",
+      "reportHtml": "<html><body><div>构建成功</div></body></html>",
+      "targetBranches": [],
+      "creator": {
+        "id": "01e37622ab90437b99f4892df65deb18",
+        "username": "admin",
+        "displayName": "admin",
+        "email": "admin@bkcode.com",
+        "tenantId": "default",
+        "admin": true,
+        "locale": "zh",
+        "createTime": "2025-10-15 11:37:36"
+      },
+      "createTime": "2025-12-31 10:23:03",
+      "updater": {
+        "id": "01e37622ab90437b99f4892df65deb18",
+        "username": "admin",
+        "displayName": "admin",
+        "email": "admin@bkcode.com",
+        "tenantId": "default",
+        "admin": true,
+        "locale": "zh",
+        "createTime": "2025-10-15 11:37:36"
+      },
+      "updateTime": "2025-12-31 14:24:24"
+    },
+    {
+      "id": 2,
+      "repoId": 1121,
+      "commitSha": "0cfeacad6fd5ceb7dc5dece5252b1bbdc3da3cc8",
+      "state": "PENDING",
+      "context": "code quality check",
+      "targetUrl": "bkcode.com",
+      "description": "code quality check in progress",
+      "reportHtml": "<html><body><div>代码质量检查中...</div></body></html>",
+      "targetBranches": ["master"],
+      "creator": {
+        "id": "01e37622ab90437b99f4892df65deb18",
+        "username": "admin",
+        "displayName": "admin",
+        "email": "admin@bkcode.com",
+        "tenantId": "default",
+        "admin": true,
+        "locale": "zh",
+        "createTime": "2025-10-15 11:37:36"
+      },
+      "createTime": "2025-12-31 14:25:00",
+      "updater": {
+        "id": "01e37622ab90437b99f4892df65deb18",
+        "username": "admin",
+        "displayName": "admin",
+        "email": "admin@bkcode.com",
+        "tenantId": "default",
+        "admin": true,
+        "locale": "zh",
+        "createTime": "2025-10-15 11:37:36"
+      },
+      "updateTime": "2025-12-31 14:25:00"
+    }
+  ]
+}
