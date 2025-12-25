@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.LoggerFactory;
 
 /**
  *  {@link ScmConnector} for {@link OkHttpClient}.
@@ -71,6 +72,9 @@ public class OkHttpScmConnector implements ScmConnector {
             // 确保response 和 response.body() 被正确关闭
             IOUtils.closeQuietly(response.body());
             response.close();
+            logger.info("[{}]response closed", request().url());
         }
+
+        private final static org.slf4j.Logger logger = LoggerFactory.getLogger(OkHttpScmConnector.class);
     }
 }
