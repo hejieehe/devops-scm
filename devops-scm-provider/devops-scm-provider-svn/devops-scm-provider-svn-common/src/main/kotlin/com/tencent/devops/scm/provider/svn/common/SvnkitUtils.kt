@@ -1,11 +1,13 @@
 package com.tencent.devops.scm.provider.svn.common
 
 import com.tencent.devops.scm.api.enums.ContentKind
+import com.tencent.devops.scm.api.exception.ScmApiException
 import com.tencent.devops.scm.api.pojo.Tree
 import com.tencent.devops.scm.api.pojo.auth.SshPrivateKeyScmAuth
 import com.tencent.devops.scm.api.pojo.auth.TokenSshPrivateKeyScmAuth
 import com.tencent.devops.scm.api.pojo.auth.TokenUserPassScmAuth
 import com.tencent.devops.scm.api.pojo.auth.UserPassScmAuth
+import com.tencent.devops.scm.api.pojo.repository.ScmProviderRepository
 import com.tencent.devops.scm.api.pojo.repository.svn.SvnScmProviderRepository
 import org.tmatesoft.svn.core.SVNDirEntry
 import org.tmatesoft.svn.core.SVNException
@@ -41,6 +43,28 @@ object SvnkitUtils {
 
     fun closeRepo(repository: SVNRepository?) {
         repository?.closeSession()
+    }
+
+    /**
+     * 执行SVN仓库操作，自动管理仓库连接的打开和关闭
+     * @param repository SVN仓库配置信息
+     * @param action 要执行的SVN仓库操作
+     * @return 操作的结果
+     * @throws ScmApiException 如果SVN操作失败
+     */
+    inline fun <T> withSvnRepository(
+        repository: ScmProviderRepository,
+        action: (SVNRepository) -> T
+    ): T {
+        val providerRepository = repository as SvnScmProviderRepository
+        val svnRepository = openRepo(providerRepository)
+        try {
+            return action(svnRepository)
+        } catch (e: SVNException) {
+            throw ScmApiException(e)
+        } finally {
+            closeRepo(svnRepository)
+        }
     }
 
     fun createAuthentication(svnURL: SVNURL, providerRepository: SvnScmProviderRepository): SVNAuthentication {

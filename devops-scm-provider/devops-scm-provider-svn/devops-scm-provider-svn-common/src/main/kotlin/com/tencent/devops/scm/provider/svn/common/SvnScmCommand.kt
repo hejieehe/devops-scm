@@ -9,12 +9,8 @@ import org.tmatesoft.svn.core.SVNException
 class SvnScmCommand : ScmCommand {
 
     override fun remoteInfo(repository: ScmProviderRepository) {
-        val providerRepository = repository as SvnScmProviderRepository
-        try {
-            val svnRepository = SvnkitUtils.openRepo(providerRepository)
+        SvnkitUtils.withSvnRepository(repository) { svnRepository ->
             svnRepository.info("", -1)
-        } catch (e: SVNException) {
-            throw ScmApiException(e)
         }
     }
 }

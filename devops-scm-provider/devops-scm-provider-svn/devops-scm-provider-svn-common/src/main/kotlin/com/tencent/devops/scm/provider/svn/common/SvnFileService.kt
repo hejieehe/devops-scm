@@ -2,33 +2,26 @@ package com.tencent.devops.scm.provider.svn.common
 
 import com.tencent.devops.scm.api.FileService
 import com.tencent.devops.scm.api.enums.ContentKind
-import com.tencent.devops.scm.api.exception.ScmApiException
 import com.tencent.devops.scm.api.pojo.Content
 import com.tencent.devops.scm.api.pojo.ContentInput
 import com.tencent.devops.scm.api.pojo.Tree
 import com.tencent.devops.scm.api.pojo.repository.ScmProviderRepository
-import com.tencent.devops.scm.api.pojo.repository.svn.SvnScmProviderRepository
 import java.io.ByteArrayOutputStream
-import org.tmatesoft.svn.core.SVNException
 import org.tmatesoft.svn.core.SVNNodeKind
 import org.tmatesoft.svn.core.SVNProperties
 
 class SvnFileService : FileService {
 
     override fun find(repository: ScmProviderRepository, path: String, ref: String): Content {
-        val providerRepository = repository as SvnScmProviderRepository
-        try {
+        return SvnkitUtils.withSvnRepository(repository) { svnRepository ->
             val bos = ByteArrayOutputStream()
-            val svnRepository = SvnkitUtils.openRepo(providerRepository)
             svnRepository.getFile(path, ref.toLong(), SVNProperties(), bos)
-            return Content(
+            Content(
                 path = path,
                 sha = ref,
                 content = bos.toString(),
                 blobId = ref
             )
-        } catch (e: SVNException) {
-            throw ScmApiException(e)
         }
     }
 
@@ -46,10 +39,8 @@ class SvnFileService : FileService {
         ref: String,
         recursive: Boolean
     ): List<Tree> {
-        val providerRepository = repository as SvnScmProviderRepository
-        try {
+        return SvnkitUtils.withSvnRepository(repository) { svnRepository ->
             val revision = ref.toLong()
-            val svnRepository = SvnkitUtils.openRepo(providerRepository)
             val svnNodeKind = svnRepository.checkPath(path, revision)
             val trees = mutableListOf<Tree>()
             if (svnNodeKind == SVNNodeKind.DIR) {
@@ -64,9 +55,7 @@ class SvnFileService : FileService {
                     )
                 )
             }
-            return trees
-        } catch (e: SVNException) {
-            throw ScmApiException(e)
+            trees
         }
     }
 }

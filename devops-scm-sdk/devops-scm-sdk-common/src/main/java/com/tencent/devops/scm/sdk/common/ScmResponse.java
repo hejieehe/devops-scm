@@ -112,14 +112,13 @@ public class ScmResponse<T> {
     }
 
     public static String getBodyAsString(ScmConnectorResponse connectorResponse) throws IOException {
-        try (InputStream inputStream = connectorResponse.bodyStream()) {
-            try (InputStreamReader r = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
-                String body = IOUtils.toString(r);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Scm API response body {}", body);
-                }
-                return body;
+        InputStream inputStream = connectorResponse.bodyStream();
+        try (InputStreamReader r = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+            String body = IOUtils.toString(r);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Scm API response body {}", body);
             }
+            return body;
         }
     }
 }

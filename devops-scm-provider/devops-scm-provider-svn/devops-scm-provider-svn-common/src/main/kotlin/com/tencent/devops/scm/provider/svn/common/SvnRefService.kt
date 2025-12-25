@@ -25,18 +25,14 @@ open class SvnRefService : RefService {
     }
 
     override fun listBranches(repository: ScmProviderRepository, opts: BranchListOptions): List<Reference> {
-        val providerRepository = repository as SvnScmProviderRepository
-        try {
-            val svnRepository = SvnkitUtils.openRepo(providerRepository)
+        return SvnkitUtils.withSvnRepository(repository) { svnRepository ->
             val trees = SvnkitUtils.listFiles(svnRepository, "", -1, false)
-            return trees.map { tree ->
+            trees.map { tree ->
                 Reference(
                     name = tree.path,
                     sha = tree.sha
                 )
             }
-        } catch (e: SVNException) {
-            throw ScmApiException(e)
         }
     }
 
