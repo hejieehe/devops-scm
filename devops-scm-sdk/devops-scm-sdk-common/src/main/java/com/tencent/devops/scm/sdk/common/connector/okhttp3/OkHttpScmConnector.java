@@ -68,6 +68,8 @@ public class OkHttpScmConnector implements ScmConnector {
         @Override
         public void close() throws IOException {
             super.close();
+            // 确保response 和 response.body() 被正确关闭
+            IOUtils.closeQuietly(response.body());
             response.close();
         }
     }
