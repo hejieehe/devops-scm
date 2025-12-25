@@ -97,10 +97,17 @@ public abstract class ScmConnectorResponse implements Closeable {
             synchronized (this) {
                 if (!inputStreamRead) {
                     InputStream rawStream = rawBodyStream();
-                    try (InputStream stream = wrapStream(rawStream)) {
-                        if (stream != null) {
-                            inputBytes = IOUtils.toByteArray(stream);
+                    try {
+                        if (rawStream != null) {
+                            try (InputStream stream = wrapStream(rawStream)) {
+                                if (stream != null) {
+                                    inputBytes = IOUtils.toByteArray(stream);
+                                }
+                            }
                         }
+                    } finally {
+                        // 确保原始流被正确关闭
+                        IOUtils.closeQuietly(rawStream);
                     }
                     inputStreamRead = true;
                 }
