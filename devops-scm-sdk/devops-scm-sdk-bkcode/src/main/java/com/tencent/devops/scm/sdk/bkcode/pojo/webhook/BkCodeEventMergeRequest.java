@@ -57,4 +57,8 @@ public class BkCodeEventMergeRequest {
     private String mergeCommitSha;
     @JsonProperty("reviewers")
     private List<BkCodeEventUser> reviewers;
+    @JsonProperty("baseCommitId")
+    private String baseCommitId;
+    @JsonProperty("headCommitId")
+    private String headCommitId;
 }

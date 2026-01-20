@@ -330,7 +330,14 @@ class TGitWebhookParser : WebhookParser {
             "approved" -> ReviewState.APPROVED
             "change_required" -> ReviewState.CHANGE_REQUIRED
             "change_denied" -> ReviewState.CHANGE_DENIED
-            "close" -> ReviewState.UNKNOWN
+            "close" -> ReviewState.CLOSED
+            "empty" -> {
+                // review状态为空，则尝试使用[event]字段进行转换
+                when (src.event) {
+                    EventAction.CREATE.value, EventAction.REOPEN.value -> ReviewState.APPROVING
+                    else -> ReviewState.UNKNOWN
+                }
+            }
             else -> ReviewState.UNKNOWN
         }
 

@@ -25,6 +25,7 @@ public class BkCodeApi {
     private volatile BkCodeCommitApi commitApi;
     private volatile BkCodeTagApi tagApi;
     private volatile BkCodeUserApi userApi;
+    private volatile BkCodeCheckRunApi checkRunApi;
 
 
     public BkCodeApi(BkCodeApiClient client) {
@@ -133,5 +134,16 @@ public class BkCodeApi {
             }
         }
         return userApi;
+    }
+
+    public BkCodeCheckRunApi getCheckRunApi() {
+        if (checkRunApi == null) {
+            synchronized (this) {
+                if (checkRunApi == null) {
+                    checkRunApi = new BkCodeCheckRunApi(this);
+                }
+            }
+        }
+        return checkRunApi;
     }
 }

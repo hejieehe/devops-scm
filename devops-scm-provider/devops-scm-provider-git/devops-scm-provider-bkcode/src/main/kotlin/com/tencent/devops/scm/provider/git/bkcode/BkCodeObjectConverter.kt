@@ -1,8 +1,12 @@
 package com.tencent.devops.scm.provider.git.bkcode
 
+import com.tencent.devops.scm.api.enums.CheckRunConclusion
+import com.tencent.devops.scm.api.enums.CheckRunStatus
 import com.tencent.devops.scm.api.enums.ScmEventType
 import com.tencent.devops.scm.api.enums.Visibility
 import com.tencent.devops.scm.api.pojo.Change
+import com.tencent.devops.scm.api.pojo.CheckRun
+import com.tencent.devops.scm.api.pojo.CheckRunInput
 import com.tencent.devops.scm.api.pojo.Comment
 import com.tencent.devops.scm.api.pojo.Commit
 import com.tencent.devops.scm.api.pojo.Content
@@ -18,6 +22,9 @@ import com.tencent.devops.scm.api.pojo.repository.ScmProviderRepository
 import com.tencent.devops.scm.api.pojo.repository.git.GitRepositoryUrl
 import com.tencent.devops.scm.api.pojo.repository.git.GitScmProviderRepository
 import com.tencent.devops.scm.api.pojo.repository.git.GitScmServerRepository
+import com.tencent.devops.scm.sdk.bkcode.enums.BkCodeCommitStateType
+import com.tencent.devops.scm.sdk.bkcode.pojo.BkCodeCommitStatus
+import com.tencent.devops.scm.sdk.bkcode.pojo.BkCodeCommitStatusInput
 import com.tencent.devops.scm.sdk.bkcode.enums.BkCodeEventType
 import com.tencent.devops.scm.sdk.bkcode.enums.BkCodeNoteableType
 import com.tencent.devops.scm.sdk.bkcode.enums.BkCodeRepoType
@@ -122,11 +129,10 @@ object BkCodeObjectConverter {
             sshUrl = srcSource.sshUrl,
             webUrl = srcSource.httpUrl
         )
-        // :TODO 最新commitId
-        val lastCommitSha = ""
+        val lastCommitSha = eventMergeRequest.headCommitId
         val base = Reference(
             name = eventMergeRequest.targetBranch,
-            sha = "",
+            sha = eventMergeRequest.baseCommitId,
             linkUrl = ""
         )
 
@@ -431,4 +437,52 @@ object BkCodeObjectConverter {
         sha = "",
         blobId = ""
     )
+
+    /*========================================check run====================================================*/
+    fun convertCheckRunInput(input: CheckRunInput) = with(input) {
+        BkCodeCommitStatusInput.builder()
+                .context(name)
+                .state(convertCheckRunStatus(status, conclusion))
+                .description(output?.summary ?: "")
+                .targetUrl(detailsUrl)
+                .reportHtml(output?.text ?: "")
+                .targetBranches(targetBranches)
+                .build()
+    }
+
+    fun convertCheckRun(from: BkCodeCommitStatus) = with(from) {
+        CheckRun(
+            id = id,
+            name = context,
+            status = convertCheckRunStatus(state),
+            summary = description,
+            detailsUrl = targetUrl,
+            detail = reportHtml,
+            conclusion = convertCheckRunConclusion(state)
+        )
+    }
+
+    private fun convertCheckRunStatus(status: CheckRunStatus, conclusion: CheckRunConclusion?): BkCodeCommitStateType {
+        return when (status) {
+            CheckRunStatus.QUEUED, CheckRunStatus.IN_PROGRESS -> BkCodeCommitStateType.PENDING
+            CheckRunStatus.COMPLETED -> when (conclusion) {
+                CheckRunConclusion.SUCCESS -> BkCodeCommitStateType.SUCCESS
+                else -> BkCodeCommitStateType.FAILURE
+            }
+
+            else -> BkCodeCommitStateType.FAILURE
+        }
+    }
+
+    private fun convertCheckRunStatus(state: BkCodeCommitStateType) = when (state) {
+        BkCodeCommitStateType.PENDING -> CheckRunStatus.IN_PROGRESS
+        else -> CheckRunStatus.COMPLETED
+    }
+
+    private fun convertCheckRunConclusion(state: BkCodeCommitStateType) = when (state) {
+        BkCodeCommitStateType.SUCCESS -> CheckRunConclusion.SUCCESS
+        BkCodeCommitStateType.FAILURE -> CheckRunConclusion.FAILURE
+        BkCodeCommitStateType.ERROR -> CheckRunConclusion.FAILURE
+        else -> null
+    }
 }
