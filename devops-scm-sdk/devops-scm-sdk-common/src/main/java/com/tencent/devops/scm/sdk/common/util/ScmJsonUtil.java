@@ -23,6 +23,10 @@ public class ScmJsonUtil {
         return Optional.ofNullable(JSON_FACTORIES.get(factoryName)).orElse(JSON_FACTORY);
     }
 
+    public static ScmSdkJsonFactory getJsonFactory() {
+        return JSON_FACTORY;
+    }
+
     public static <T> T fromJson(String factoryName, String jsonStr, Class<T> clazz) {
         try {
             ScmSdkJsonFactory jsonFactory = getJsonFactory(factoryName);
@@ -38,18 +42,6 @@ public class ScmJsonUtil {
         } catch (Exception exception) {
             throw new ScmSdkException(exception);
         }
-    }
-
-    public static String toJson(String factoryName, Object object) {
-        try {
-            return getJsonFactory(factoryName).toJson(object);
-        } catch (Exception exception) {
-            throw new ScmSdkException(exception);
-        }
-    }
-
-    public static ScmSdkJsonFactory getJsonFactory() {
-        return JSON_FACTORY;
     }
 
     public static <T> T fromJson(String jsonStr, Class<T> clazz) {
@@ -71,6 +63,14 @@ public class ScmJsonUtil {
     public static String toJson(Object object) {
         try {
             return JSON_FACTORY.toJson(object);
+        } catch (Exception exception) {
+            throw new ScmSdkException(exception);
+        }
+    }
+
+    public static String toJson(String factoryName, Object object) {
+        try {
+            return getJsonFactory(factoryName).toJson(object);
         } catch (Exception exception) {
             throw new ScmSdkException(exception);
         }
